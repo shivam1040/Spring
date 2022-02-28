@@ -1,0 +1,19 @@
+MVC-model view controller
+
+spring mvc sub module is used to build a web application
+spring mvc is build on top of servlet api
+servlet api doesn't use mvc architecture so spring mvc provides this feature
+
+in MVC: Model is data, view is presentation layer, controller(interface b/w model and view) is who control(servlet in this case)
+
+SpringMVc provides loose coupling as compared to servlet jsp implementation
+
+Springmvc has all feaures of spring core(ioc, autowiring, dependency injection)
+
+MVC Design pattern: it's basically a way to oraganize and keep the code, this automatically maintains a standard
+
+data can be moved between view and controller by model and modelAndView
+
+pathvariable annotation is used to bind method parameter to uri tempelate'
+
+springinterceptor is same as filter in servlet

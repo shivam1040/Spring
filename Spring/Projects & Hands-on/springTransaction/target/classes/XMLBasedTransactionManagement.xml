@@ -1,0 +1,10 @@
+<aop:config proxy-target-class="true"> <!-- configuration for xml based transaction management which uses aop -->
+		<aop:advisor advice-ref="transactionAdvice" pointcut="execution(* com.springTransaction.BankServiceImpl.transferFund2(Account, Account, double))"/>
+	</aop:config>
+	
+	<tx:advice id="transactionAdvice" transaction-manager="dataSourceTransactionManager1" > <!-- configuration for xml based transaction management cont. -->
+		<tx:attributes>
+			<tx:method name="transferFund2"/> <!-- defining the method name for transaction management and transaction attributes -->
+		</tx:attributes>
+	</tx:advice>
+	<!-- this is another way to implement declarative approach of transaction implementation -->

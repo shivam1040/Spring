@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/util
+	http://www.springframework.org/schema/util/spring-util.xsd
+	http://www.springframework.org/schema/tx
+	http://www.springframework.org/schema/tx/spring-tx.xsd
+	http://www.springframework.org/schema/mvc
+	http://www.springframework.org/schema/mvc/spring-mvc.xsd"> <!-- util tag and schemaLocation is necessary for standalone collections -->
+
+<!-- declaring xmlns:mvc above is necessary for declaring public resources and serving static resources -->
+	
+	<context:component-scan base-package="springmvc1"></context:component-scan> <!-- this will scan the package and automatically configure the controller class and allows use of annotations in classes-->	
+	
+	<mvc:resources location="/WEB-INF/resources_PublicAccess/" mapping="/resources_PublicAccess/**"></mvc:resources> <!-- mapping means how resources location should be given where we want to use static content like css file in html, so the location should begin with /resources -->
+	<mvc:annotation-driven></mvc:annotation-driven> <!-- since we have used annotation based config in controller classes so to use mvc tag we need to enable annotation driven -->
+	
+	
+	<tx:annotation-driven/> <!-- this enables @transactional annotation used in contact dao -->
+	
+	<mvc:interceptors> <!-- way to config interceptor in spring -->
+		<mvc:interceptor>
+			<mvc:mapping path="/interceptor"/> <!-- this tell spring the url hit when interceptor should be called -->
+			<!-- mapping path can be changed to "/*" to make the interceptor generalizd -->
+			<bean class="springmvc1.Interceptor"></bean> <!-- name of the class whic has interception mehods -->
+		</mvc:interceptor>
+	</mvc:interceptors>
+	
+	<bean class="org.springframework.web.multipart.commons.CommonsMultipartResolver" id="multipartResolver">
+		<property name="maxUploadSize" value="999999"></property> <!-- optional tag to give size limit in bytes -->
+	</bean> <!-- this config is necessary for uploading file in multipart mode, ensure the id value is same as given -->
+	
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" id="viewResolver">
+		<property name="prefix" value="/WEB-INF/views/"></property> <!-- defines where pages are stored -->
+		<property name="suffix" value=".jsp"></property> <!-- defines what type of pages -->
+		
+	</bean>
+	
+	 <!-- below is the config for hibernate -->
+	 
+	<bean class="org.springframework.jdbc.datasource.DriverManagerDataSource" id="dataSource1"> <!-- creating bean for drivermanagerdatasource -->
+		<property name="driverClassName" value="com.mysql.cj.jdbc.Driver"></property>
+		<property name="url" value="jdbc:mysql://localhost:3306/springjdbc"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value="root"></property>
+	</bean>
+	
+	<bean class="org.springframework.orm.hibernate5.LocalSessionFactoryBean" id="localSessionFactoryBean1"> <!-- creating bean for localsessionfactory and passing drivermanagerdatasource refrence -->
+		<property name="dataSource" ref="dataSource1"></property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL8Dialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+		<property name="annotatedClasses"> <!-- defining the entitiy classes or classes which are using annotations. use mapping resource property for using hibernate xml mapping files -->
+			<list>
+				<value>springmvc1.Contact</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean class="org.springframework.orm.hibernate5.HibernateTemplate" id="hibernateTemplate1"> <!-- creating bean for hibernatetempelate and passing sessionfactory object -->
+		<property name="sessionFactory" ref="localSessionFactoryBean1"></property>
+	</bean>
+	
+	<bean class="springmvc1.ContactDao" id="contactDao1"> <!-- creating bean for studentdao and passing refrence for hibernatetemepelate -->
+		<property name="hibernateTemplate1" ref="hibernateTemplate1"></property>
+	</bean>
+	
+	<bean class="org.springframework.orm.hibernate5.HibernateTransactionManager" id="transactionManager"> <!-- this bean is necessary for write operations in DB -->
+		<property name="sessionFactory" ref="localSessionFactoryBean1"></property> <!-- ensure to use transactionManager as bean name since spring takes this name only -->
+	</bean>
+	
+</beans>

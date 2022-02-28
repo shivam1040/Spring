@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/util
+	http://www.springframework.org/schema/util/spring-util.xsd
+	http://www.springframework.org/schema/tx
+	http://www.springframework.org/schema/tx/spring-tx.xsd
+	http://www.springframework.org/schema/mvc
+	http://www.springframework.org/schema/mvc/spring-mvc.xsd"> <!-- util tag and schemaLocation is necessary for standalone collections -->
+
+<!-- declaring xmlns:mvc above is necessary for declaring public resources and serving static resources -->
+
+<tx:annotation-driven/> <!-- this enables @transactional annotation used in contact dao -->
+
+<context:component-scan base-package="springMVCCRUDProject"></context:component-scan> <!-- this will scan the package and automatically configure the controller class and allows use of annotations in classes-->	
+
+<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" id="viewResolver">
+		<property name="prefix" value="/WEB-INF/views/"></property> <!-- defines where pages are stored -->
+		<property name="suffix" value=".jsp"></property> <!-- defines what type of pages -->
+	</bean>
+	
+		<bean class="org.springframework.jdbc.datasource.DriverManagerDataSource" id="dataSource1"> <!-- creating bean for drivermanagerdatasource -->
+		<property name="driverClassName" value="com.mysql.cj.jdbc.Driver"></property>
+		<property name="url" value="jdbc:mysql://localhost:3306/springjdbc"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value="root"></property>
+	</bean>
+	
+	<bean class="org.springframework.orm.hibernate5.LocalSessionFactoryBean" id="localSessionFactoryBean1"> <!-- creating bean for localsessionfactory and passing drivermanagerdatasource refrence -->
+		<property name="dataSource" ref="dataSource1"></property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL8Dialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+		<property name="annotatedClasses"> <!-- defining the entitiy classes or classes which are using annotations. use mapping resource property for using hibernate xml mapping files -->
+			<list>
+				<value>springMVCCRUDProject.Product	</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean class="org.springframework.orm.hibernate5.HibernateTemplate" id="hibernateTemplate1"> <!-- creating bean for hibernatetempelate and passing sessionfactory object -->
+		<property name="sessionFactory" ref="localSessionFactoryBean1"></property>
+	</bean>
+	
+	
+	
+	<bean class="org.springframework.orm.hibernate5.HibernateTransactionManager" id="transactionManager"> <!-- this bean is necessary for write operations in DB -->
+		<property name="sessionFactory" ref="localSessionFactoryBean1"></property> <!-- ensure to use transactionManager as bean name since spring takes this name only -->
+	</bean>
+</beans>

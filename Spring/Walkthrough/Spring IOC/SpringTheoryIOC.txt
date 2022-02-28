@@ -1,0 +1,136 @@
+spring doesn't have os library dependency, thus lightweight, spring jar is enough. EJB usese appserver so heavy weight, and these are even tightly coupled
+
+losely(independent) coupled means having flexibility between two object, classes, api, freedom to use any replace any
+
+Runtime polymorishm helps in acieving loose coupling i.e. using interfaces for different implementations as per our need. For example, creating jdbc, jpa and hibernate implementations and use according to our need
+
+POJO means plain old java object, contains no extends or implements
+
+Spring suggests association instead of extending the classes that is
+'class A{
+Address a //this type of association is known as Has-A relationship, this makes the class lightweight
+}
+insted of
+'class A extends Address{
+}'
+
+In Spring pojo model is used for DAO, Businnes, COntroller layer
+
+'class A{ //how to create object at runtime for an interface which has various implementations
+Interfac1 ref=Class.forName(arg[0]); //in this method the implementing class which we need to create object for is passed as arguement to the main method while executing and using class.forname method the obj refrnce for interface is created
+}'
+
+Spring is implemented by using runtime polymorishm and association(HAs-A relationship)
+
+In case of spring, runtime arguements are passed by xml mostly insted of main method, this process is IOC(Inversion of control)
+
+IOC container does the job of parsing configuration files and passing arguements to pojos
+
+IOC has three containers, Core container(named as BeanFactory) and J2EE container(named as ApplicationContext Interface)
+
+throughout spring we have core, j2ee and web container(this is present is spring mvc and made on top of IOC)(named as WebApplicationCOntext) and in spring of MVC IOC is not needed since web container implementation is alreday there
+
+Dependency injection- in case of spring passing data from xml to variable
+
+Container responsibilities-read configuration(xml), create instance of pojos, manage lifecycle of pojos, passing dynamic inputs(dependency injection which is main feature of spring, makes program loosely coupled)
+
+Core Container has Beanfactor inteface implementation provided by xmlbeanfactory class
+j2ee continer has applicationcontext interface and a child interface configurableapplicationContext whose implementation is provided by classpathxml class, applicationcontext class
+web container has webapplicationcontext interface whose implementation is webapplicationcontextutil
+
+
+In case of servletes, people generally write drive code of spring in init method of servlet
+In spring xml dtd(documented definition)/xsd(xml schema definition) is compulsory
+
+'Resource r=new classpathresource("config.xml");
+BeanFactory obj=new XMLBeanFactory(r); //creating object by using beanfactory interface method
+obj.getBean("beanId")"
+'
+
+difference betwween beanfactory and application context is that, object creation in case of beanfactory will be when the getbean is called(on demand) while in case of applicationcontext(recomended way) object creation is at the time of xml loading//this is applicable only when the scope is singleton
+
+dtd/xsd are for validation of config file, reading by sax parser
+
+configxml will be loaded by reflection classes then objects are made by spring using class.forName() and this forname requires public class and constructors
+
+for object creation by spring the bean classes must be public and spring can access private constructors too
+
+SpringIOC has one more type of injection known as interface injection but this also uses setter method in background
+
+'<bean class="a".../> <!--this will call default constructor and just create an object-->'
+
+if we give two same indexex in index attribute of constructor args tag then the latest value is injected
+
+' A a=new A();
+b.method(a); //this is pass by refrence
+b.method(new A()); // this is pass by value'
+
+'<set>
+<ref>v</ref> <!--tag for injecting refrence if set type is so-->
+<value>n</value>
+</set>'
+
+by default for set tag spring will implement linkedshashset, for list it uses arraylist and for map it uses linkedhashmap so it becomes a problem if we have to inject into some other type like hashmap linkedlist etc
+
+'<beans
+xmlns="hey-namespace"
+xmlns:util="util-namespace"
+
+<bean class="xyz" id="abc">
+<property name="collection">
+<util:list list-class="java.util.LinkedList">
+<values>1</values>
+</util:list>
+</property> <!--way to use any type of collection implementation for injecting -->
+</bean>
+</beans>'
+
+'<beans
+xmlns="bean-namespace"
+xmlns:util="util-namespace"
+
+<bean class="xyz" id="abc">
+<property name="properties">
+<util:property location="classpath:SQLConfig"> <!--way to inject data from file into property datatype -->
+</util:list>
+</property> 
+</bean>
+</beans>'
+
+'<bean id="abc" class="car" dependency-check="none/>' <!--dependency check is used for making mandatory to call setter or constructor for initiallizing variables, when the value is none the object gets created without any mandatory calling of setter/constructor, when the value of this attribute is simple then it is manadatory to initiallize primitive variables setter methods, if the attribute's value is object then it is mandatory to call setter methods of refrence type setter methods, if the attribute value is all then it's necessary to write all dependencies(variable)
+
+@Required annotation can be applied at method level for setter methods to make them mandatory to be called via spring and give values for related data fields
+
+to make the annotation work one can also create bean tag for class assocaiated with the tag
+
+generally in spring the bean creation is done on basis of their order
+
+Autowiring can't inject primitive types
+
+using autowiring one can do dependency without setter/constructor
+
+<beans defaut-autowire="byType/> <!--this will apply autowire type and value to every bean present under this tag, no need to define autowire attribute in every tag-->
+
+singleton(same object no matter how many times created) classes are recomended for classes having static content not dynamic or let's say factory classes
+
+<bean id="c" class="abc" factory-method="getObj"/> <!--in this obj creation approach the object gets created by calling getObj method of abc class not constructor or setter methods-->
+
+<bean id="a" class="abc"factory-bean="c" factory-method="open-session"/> <!--this approach is used when object creationof a class is dependent on creation by obj of other class-->
+
+if the object creation is done by context component scan tag the value for primitive type needs to be given manually
+
+factorymethods create obj for interfaces and providing independencyon client side, for instace drivermanager factory method will give connection obj for oracle, mysql etc. no need to change code for every vendor 
+
+for implementing factory classes, spring has three approach i.e staticfactory, instancefactory and byusing factorybean interface
+
+Implementing factory bean for factory classes, we need to override three methods i.e getObject, getObjectype, singleton
+
+configurableapplicationcontext(belongs to j2ee of ioc) used for maintaining lifecycle of pojo classes
+"
+'<beans defaault-init-method="init" defefault-destroy-method="destroy"/> <!--way to define default init and destroy method for all tags-->
+
+interface methods and abstract methods are known as lookup methods, by using this method we can provide implementation class for interface/abstract method. This method generally used for methods which return primitive
+
+'interface a{ public Engine ab();} <bean class="c" class="a"><lookup-method name="ab bean="e"/></bean> <bean id="e" class="Engine"/> <!--way to use lookup method for providing implementation-->
+
+MethodReplace helps us to avoid rebuilding application when making changes like methods, vars etc.

@@ -1,0 +1,4 @@
+Spring propogation gives ability to the developer to define how business methods should behave/encapsulated in terms of logical and physical transaction
+Methods from distinct spring beans may be executed in same transaction scope or may expand acrosss multiple nested transaction
+
+ 

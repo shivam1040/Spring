@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/util
+	http://www.springframework.org/schema/util/spring-util.xsd"> <!-- util tag and schemaLocation is necessary for standalone collections -->
+	<context:annotation-config></context:annotation-config> <!-- this tag is used to enable all annotation used in project -->
+	
+	<context:component-scan base-package="com.springcore2"></context:component-scan> <!-- this scans all the classes and subpackages in mentioned base package, necessary for stereo annotations -->
+	
+	<util:list list-class="java.util.LinkedList" id="friendLinkList"> <!-- creating a link list standalone collection -->
+		<value>A</value>
+		<value>B</value>
+		<value>C</value>
+	</util:list>
+	
+	<util:map map-class="java.util.HashMap" id="feeStructureMap">
+		<entry key="a" value="1"></entry>
+		<entry key="b" value="2"></entry>
+	</util:map>
+	
+	<util:properties id="properties"> <!-- definig standalone Properties -->
+		<prop key="ab">com</prop>
+		<prop key="bc">moc</prop>		
+	</util:properties> <!-- since Properties is not an interface hence defining class tag(refers to the implementing class) is not required-->
+	
+	<util:list list-class="java.util.ArrayList" id="temp">
+		<value>LK</value>
+		<value>DL</value>
+	</util:list>
+	
+	<bean class="com.springcore2.SpringLifeCycleByAnnotation" name="springLifeCycleByAnnotation1">
+		<property name="subject" value="Ma"></property>
+	</bean>
+	
+	<!-- <bean class="org.springframerwork.context.annotation.CommonAnnotationBeanPostProcessor"></bean> --> <!-- this can be used to only run postconstruct and predestroy, similalry to run annotation according to our need we can declare bean tag and and their respective classes like this -->
+	
+	<bean class="com.springcore2.Address" name="address">
+		<property name="street" value="dr"></property>
+		<property name="city" value="lk"></property>
+	</bean>
+	
+	<bean class="com.springcore2.Address" name="address2">
+		<property name="street" value="vr"></property>
+		<property name="city" value="fk"></property>
+	</bean>
+	
+	<!-- <bean class="com.springcore2.EmployeeAutowiring" name="employeeAutowiring1" autowire="byName"></bean> --> <!-- in autowire byName spring checks the name of variable in employeeautowiringclass and a bean in the xml having same name and then autoinjects it, if match is not found then output is null -->
+	
+	<!-- <bean class="com.springcore2.EmployeeAutowiring" name="employeeAutowiring1" autowire="byType"></bean> --> <!-- in this case autowiring will be done by finding a bean in config file of the same refrence type(Address in this case) -->
+	
+	<!-- <bean class="com.springcore2.EmployeeAutowiring" name="employeeAutowiring1" autowire="constructor"></bean> --> <!-- in this autowiring injection will be done by using constructor injection method -->
+	
+	<bean class="com.springcore2.EmployeeAutowiring" name="employeeAutowiring1"></bean>	<!-- this is for annotation type autowiring, check the employeeautowiring class and notice the autowired tags -->
+	
+	<!-- using autowiring one can do dependency without setter/constructor -->
+
+	<bean class="com.springcore2.PersonStandaloneCollections" name="personStandaloneCollections1"> <!-- here the name tag can be considered as object name -->
+		<property name="friends">
+			<ref bean="friendLinkList"></ref> <!-- using list having id friendlinkedlist created above --> <!-- if we have a two beans for the same class which is being used as a variable in some class and we have to use autowiring, generally spring will throw exception due to ambiguity because of two beans for same class so in this case we can use the attribute autowiring-candidate=false in the bean which we don't want to participate in autowing type bean creation, this ambiguity happens when autowiring approach is by-type -->
+		</property>
+		<property name="feeStructure" ref="feeStructureMap"></property> <!-- injecting map -->
+		<property name="properties" ref="properties"></property>
+	</bean>
+	
+	<bean class="com.springcore2.Scope" name="scope1" scope="prototype"></bean> <!-- defining scope prototype, so everytime getbean is called a new object will be given which is not the case in Singleton -->
+	
+	<bean class="com.springcore2.StaticVarInjection" id="staticVarInjection1"></bean>
+	
+	<!-- below bean is the way to set value for static var of class StaticVarInjection -->
+	<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="staticMethod" value="com.springcore2.StaticVarInjection.setCarName"></property>
+		<property name="arguments">
+			<list>
+				<value>fdg</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean class="com.springcore2.SingletonDemo" factory-method="getInstance" id="singletonDemo1"></bean>
+</beans>

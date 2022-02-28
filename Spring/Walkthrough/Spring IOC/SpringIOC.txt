@@ -1,0 +1,64 @@
+Spring is dependency(object) injection framewok used for making loosely coupled application
+
+Dependency injection: It's a design pattern, and spring has the ability to create objects of other class and use it for other classes as and when required
+
+Spring modules: Core and Beans-provides basic feaatures such as dependency injection, IOC, COnstructor Injection, property injection etc
+Context- Inherit features from bean modules, provides internalization, even propogation, resource loading and transparent creation of context, servlet context etc. 
+spEL-spring expression language, used to manipulate object graph at runtime
+
+AOP-Aspect Oriented Programming, allows to define method interceptors(to do a task befor or after execuion of method) and point cuts to keep code decoupled and separated
+Messaging-used for making messaging application, annotations can be used to map messages with method 
+Instrumentation-Provides class instrumentation and class loader support, mostly used in server side applications
+
+Data/Access Integration modules-JDBC(abstraction of java jdbc, easier integratiom), ORM(Integrate hibernate jpa etc.), OXM(Object xml mapping), JMS(Java messaging service, to produce/reciever messages)
+
+WeB MODULES-Web, Servlet, Portlet, Websocket
+
+**over**
+
+Sring IOC Container-maintains the lifecycle of object; creation, holding objects in memory, inkection of one object into another
+Spring IOC requires Beans classes(which is classes for whom objects need to be managed) and Config(it's xml or annotations which bean is dependent on whom)
+Spring ioc takes help of config to to creates and maintain objects of beans for application running
+
+Spring has application context(interface) which represents spring ioc container. ther's another representation called bean factory but since application context has all of bean factory(application context extends bean factory) so not needed
+
+ApplicationContext has three classes which extends it. ClassPathXML(for getting config data for beans from xml), AnnotationConfig(config from annotation), FileSystemXML(config for beans from files)
+
+SpringIOC Container does dependency injection in two ways, setter injection and constructor injection
+Setter injection will be by means of setter methods at the time of object creation(runtime)
+Constructor injection by means of constructors at the time of object creation(runtime)
+
+data types supported for injection- primitive, collection, refrence(custom data type, such as Address address)
+
+in spring three ways cAn be used to inject values that are value as element, value as attribute, value by p schema(most used)
+
+Spring provides two important methods to every bean, public void init()contains initiallization code and public void destroy()contains cleanup code. The name can be changed of methods but signature must be same 
+
+In spring lifecycle, bean is created, data is injected, init is run, user specific instructions/codes are run and clean up is done by destroy method before deleting the obj created for bean
+WHILE IN servlet init is called befor data injecting
+Custom init and destroy can be created by XML, spring interfaces or annotations
+In annotation method, @PostConstruct acts as init method, @PreDestroy acts as destroy method. In java9+ these annotations aren't available so dependencies need to be brought and added in pom.xml for using these annotations
+
+Autowiring is a feature of spring in which spring container inject the dependencies automatically. This feature is not available for injecting primitive ant string data, only refrence datatype
+linking of one object to another is known as wiring, manually it has been done by '<ref bean=""/>' tag
+Autowiring can be done by two methods, by XML and by Annotations
+by deafault in XML, autowiring is disabled. autowiring in xml can be done byName, bydataType, byConstructor,autodetect(deprecated)
+In Annotations method, @Autowired is used for autowiring. Autowire tag can be used above setter, variable or constructor for autowiring
+Disadvantages of autowiring:no control to programmer, no string/primitive support
+
+Standalone collections are a feature in spring which allows one to create collection data/object according to one's need and use it whereever required. generally when collection type is used inside property tag it's not known if that collection type is of list or set etc. It can't be used in other property tags, i.e we need to rewrite the same collection type again. Hence standalone collection 
+to use standalone collections utilschema is used
+
+Stereotype Annotations- @Component is a type of annotations used above class definition to create object of the particular class at runtime without any need to write anything in config xml. But to create object of this class we need to declare in config thatthis class belong to which package
+
+In Spring, available scopes are Singleton(Spring IOC, default scope, Singleton means creating only single object and giving its refrence on every call), prototype(Spring IOC, this means new object is given at every call), request(restricted to http request, can only be used while creating webapplication), session(restricted to httpsession), globalsession(restricted to portlet)
+'<bean class="" name="" scope=""/> // syntax for scope defining'
+
+'@Component
+@Scope("")
+class A{}' //another way to define scope
+
+In Spring EL, supports parsing and executing expressions with help of @Value annotations '@Value("#{1+2}")'
+It can evaluate; class, object, variable, methods, constructor, conditional statements, symbols(char, numeric, operators, keywords, special symbol which return a value)
+T(classname).methodname(parameters) //expression language for calling static method
+T(classnmae).variablename //EL for calling static variable

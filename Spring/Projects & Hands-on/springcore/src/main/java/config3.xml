@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/util
+	http://www.springframework.org/schema/util/spring-util.xsd"> <!-- util tag and schemaLocation is necessary for standalone collections -->
+	<context:annotation-config></context:annotation-config> <!-- this tag is used to enable all annotation used in project -->
+	
+	<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="staticMethod" value="com.springcore3.StaticApproachFactoryImplementationForCreatingObjOfOtherClass.setCarName"></property> <!-- giving setter name -->
+		<property name="arguments">
+			<list> <!-- using MethodInvoking... to give details required for static approach to factory methods -->
+				<value>com.springcore3.Audi</value> <!--passing the class name to static var in statiApproachFactoryImple... class-->
+			</list>
+		</property>
+	</bean>
+	
+	<bean class="com.springcore3.StaticApproachFactoryImplementationForCreatingObjOfOtherClass" id="1" factory-method="getInstance"></bean> <!-- this bean will give obj for carfactoryIm interface -->
+	
+	<bean class="com.springcore3.StaticApproachFactoryImplementationForCreatingObjOfOtherClass" id="2">
+		<property name="car" value="com.springcore3.Audi"></property>
+	</bean> <!-- steps for instance type factory method -->
+	
+	<bean id="factory" factory-bean="2" factory-method="getInstance1"></bean> <!-- steps for instance type factory method -->
+	
+	<bean class="com.springcore3.FactoryBeanInterfaceAppproachForFactory" id="factoryBeanInterfaceAppproachForFactory1"> <!-- way to use factorybean interface for factorymethods -->
+		<property name="carName" value="com.springcore3.Audi"></property>
+	</bean>
+	
+	<!-- in lookup method for obj creation, in jvm proxy classes will be created and loaded automatically which will provide implementation and obj for an interface -->
+	<bean class="com.springcore3.bus" id="objCreationByLookupMethodForInterfaces1">
+		<lookup-method name="myBusEngine" bean="eng"/>
+	</bean>
+	<!-- this lookup method  for abstract class bus -->
+	<bean id="eng" class="com.springcore3.Engine">
+		<property name="name" value="swift"></property>
+	</bean>
+	
+	<!-- this lookup method  for concrete class bus -->
+	<bean class="com.springcore3.Truk" id="objCreationByLookupMethodForInterfaces2">
+		<lookup-method name="myTrukEngine" bean="eng"/>
+	</bean>
+	
+	<bean class="com.springcore3.LifeCycleImpleUsingConfigurableAppContext" id="lifeCycleImpleUsingConfigurableAppContext1"></bean>
+
+	<bean class="com.springcore3.MethodReplace" id="methodReplace1"> <!-- implementing method replace -->
+		<replaced-method name="deposit" replacer="methodRep1"></replaced-method>
+	</bean>
+	
+	<bean class="com.springcore3.MethodRep" id="methodRep1"></bean>
+	
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="Location" value="a.properties"></property> <!-- loading properties file data into spring context -->
+	</bean>
+	
+	<bean class="com.springcore3.InjectPropertiesFromFile" id="injectPropertiesFromFile1">
+		<property name="driver" value="${driver}"></property> <!-- using EL to inject loaded contex value -->
+	</bean>
+	
+	<bean class="com.springcore3.IOCStartEventListe"></bean> <!-- below are the implementations of ioc event listeners -->
+	<bean class="com.springcore3.IOCStopEventLis"></bean>
+	<bean class="com.springcore3.IOCOnRefreeshEventList"></bean>
+	<bean class="com.springcore3.IOCCloseEvent"></bean>
+</beans>

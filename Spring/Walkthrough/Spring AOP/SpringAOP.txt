@@ -1,0 +1,10 @@
+AOP:aspect oriented programming is a paradigm like oops. with aop we can insert code in between of running programs/service and needn't to modify the entire program
+The codes which are applied in between externally are known as cross cutting concern
+
+like classes in oops, aop has aspects and these aspects contains advices(methods)/codes which need to be inserted externally
+
+join point is the point/method/step before which we need to insert external codes
+
+In spring, proxy objects aren't created for interface implementation, so cglib is required for this. For instance suppose there's an implementation of service interface so in this case to enable proxy object creation for AOP use <aop:aspectj-autoproxy proxy-target-class="true"></aop:aspectj-autoproxy>
+
+Afterreturning aop works when methodis executed sucessfully

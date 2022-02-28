@@ -1,0 +1,15 @@
+Spring propogation gives ability to the developer to define how business methods should behave/encapsulated in terms of logical and physical transaction
+Methods from distinct spring beans may be executed in same transaction scope or may expand acrosss multiple nested transaction
+
+local transaction management-single database
+two phase/distributed transaction management-multiple database
+
+in spring we can implement transactions in two ways, one is programmatic way and another is declarative way
+
+programmatic way give greater control to user in setting up the transaction boundaries, possible to set boundaries to part of code, however transaction management codes need to be inserted into program logic which is very intrusive
+
+declarative type is annotation type transaction management
+
+JTATransactionManager class can be used for multiple DB transaction management
+
+use defaultTransaction definition for implementing I of transaction ACID property 

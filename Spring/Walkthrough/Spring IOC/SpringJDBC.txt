@@ -1,0 +1,3 @@
+spring jdbc over normal jdbc because- avoid lot of codes, avoid every operation exception handling with try catch because of checked exception, avoid repition of code for different logics
+
+Spring provides jdbctemplate class for jdbc operations

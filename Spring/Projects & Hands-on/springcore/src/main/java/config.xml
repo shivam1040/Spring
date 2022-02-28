@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context=" http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd">
+	
+	<bean class="com.springcore.Student" name="student1">
+		<property name="studentId"> <!-- this injection is by setter method -->
+			<value>1</value>	
+		</property>
+		<property name="studentName"> <!-- this injection is by setter method -->
+			<value>SJ</value>	<!-- value is set as a tag to the given property -->
+		</property>
+		<property name="studentAddress" value="UP"></property> <!-- in this case value is set as an attribute to the given property -->
+	</bean>
+	
+	<bean class="com.springcore.Student" name="student2" p:studentId="2" p:studentName="HJ" p:studentAddress="KA"></bean>  <!-- data is passed to variables by p(property) schema method -->
+	
+	<bean class="com.springcore.EmpCollections" name="empcollections1">
+		<property name="name" value="SJ"></property>
+		<property name="phones">
+			<list> <!-- way to inject list collection -->
+			<value>1</value>
+			<value>2</value> <!-- to create a blank list just add a list tag without any values in it -->
+			<null></null> <!-- way to inject null value -->
+			</list>
+		</property>
+		
+		<property name="addresses"> <!-- way to inject set collection -->
+			<set>
+				<value>LKO</value> <!-- if we want to insert only one value then that can be done by using a single value tag and set tag can be excluded, same for list, map etc. -->
+				<value>DL</value>
+			</set>
+		</property>
+		
+		<property name="courses">
+			<map> <!-- way to inject map collection -->
+				<entry key="A" value="2"></entry>
+				<entry key="B" value="3"></entry>
+			</map>
+		</property>
+	</bean>
+	
+	<bean class="com.springcore.Bref" name="bref"> <!-- injecting data for refrence variables -->
+		<property name="y" value="90"></property>
+	</bean>
+	
+	<bean class="com.springcore.Aref" name="aref">
+		<property name="x" value="12"></property>
+		<property name="ob">
+			<ref bean="bref"></ref> <!-- injecting the refrence created above to refrence type variable in a -->
+		</property>
+	</bean>
+	<!-- <bean class="com.springcore.Aref" name="aref" p:x="12" p:ob-ref="bref"></bean> --> <!-- ob-ref(var-ref) is keyword to inject already created refrence in this config -->
+	
+	<bean class="com.springcore.Certi" name="certi1">
+		<constructor-arg value="Ja"></constructor-arg>
+	</bean>
+	
+	<!-- <bean class="com.springcore.Certi" name="certi1" c:name="Ja"></bean> --> <!-- using c(constructor) schema to inject data -->
+	
+	<bean class="com.springcore.Person" name="person1"> <!-- injecting data by constructor method -->
+		<constructor-arg value="SJ"></constructor-arg> <!-- constructor arg will store SJ in parameter of constructor of Person class which takes string as value -->
+		<constructor-arg value="1" type="int"></constructor-arg> <!-- by defining type this value will get explicitly stored in int type parameter in constructor of Person class -->
+		<constructor-arg ref="certi1"></constructor-arg>
+	</bean>
+	
+	<bean class="com.springcore.AdditionConstructorAmbiguity" name="additionConstructorAmbiguity1">
+		<constructor-arg value="12" index="1"></constructor-arg> <!-- by default spring considers the value as string, if no parameter is present which takes string value then constructor arg considers ordering of different constructors -->
+		<constructor-arg value="34" index="0"></constructor-arg> <!-- this injection ambiguity can be resolved by defining type attribute 'type="int"' -->
+		<!-- defining the index attribute we can set which value will get stored in which parameter, giving index as 0 the value will be stored in first parameter of constructor -->
+	</bean>
+	
+	<bean class="com.springcore.SpringLifecycle" name="springLifecycle1" init-method="init" destroy-method="destroy"> <!-- defining init and destroy methods which are defined in Springlifecycle class -->
+		<property name="price" value="10"></property>
+	</bean>
+	
+	<bean class="com.springcore.SpringLifeCycleByInterFaces" name="springLifeCycleByInterfaces1">
+		<property name="price" value="49"></property>
+	</bean>
+	
+	
+</beans> 
